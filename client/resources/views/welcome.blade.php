@@ -8,66 +8,24 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+        <!-- Bootstrap -->
+        <link href="../../css/app.css" rel="stylesheet">
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+        <!-- Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
+        <!-- Axios -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
         <script>
-            function loginAPI() {
-                axios.post('http://localhost:8000/api/login', {
+            function registerAPI() {
+                axios.post('http://localhost:8000/api/register', {
+                    name: document.getElementById('name').value,
                     email: document.getElementById('email').value,
                     password: document.getElementById('password').value,
+                    password_confirmation: document.getElementById('password_confirmation').value,
                     headers:  {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -75,6 +33,25 @@
                 })
                 .then(function (response) {
                     document.getElementById('token').value = response.data.token;
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            function loginAPI() {
+                axios.post('http://localhost:8000/api/login', {
+                    email: document.getElementById('email_login').value,
+                    password: document.getElementById('password_login').value,
+                    headers:  {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                .then(function (response) {
+                    document.getElementById('token').value = response.data.token;
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
                     console.log(response);
                 })
                 .catch(function (error) {
@@ -90,43 +67,122 @@
                     },
                 })
                 .then(function (response) {
-                    document.getElementById('resposta').innerHtml = response.data.status;
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
                     console.log(response);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             }
-
+            function loginCookieAPI() {
+                axios.post('http://localhost:8000/api/cookielogin', {
+                    email: document.getElementById('email_login').value,
+                    password: document.getElementById('password_login').value,
+                    headers:  {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                .then(function (response) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            function openAPI() {
+                axios.get('http://localhost:8000/api/open', {
+                    headers:  {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                .then(function (response) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            function closedAPI() {
+                axios.get('http://localhost:8000/api/closed', {
+                    headers:  {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer '+document.getElementById('token').value,
+                    },
+                })
+                .then(function (response) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            function getCookieValue(a) {
+                console.log(document.cookie);
+                var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+                return b ? b.pop() : '';
+            }
+            function closedCookieAPI() {
+                axios.get('http://localhost:8000/api/closedcookie', {
+                    headers:  {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer '+getCookieValue('batatinha'),
+                    },
+                })
+                .then(function (response) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(response.data);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
         </script>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+        <div class="content">
+            <div class="container" id="accordionExample">
+                <div class="jumbotron">
+                    <h1>Client</h1>
                 </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Client
+                <h5>Result</h5>
+                <div class="bg-dark p-3 mb-3">
+                    <pre><code id='resposta' class="text-light"></code></pre>
                 </div>
-                <div class="links">
-                    <p><input type="text" id='email' placeholder="email"/></p>
-                    <p><input type="password" id='password' placeholder="password"/></p>
-                    <p><button onclick="loginAPI()">Login API - JS</button></p>
-                    <p><input type="text" id='token' placeholder="<<TOKEN>>"/></p>
-                    <p><button onclick="userAPI()">User API - JS</button></p>
-                    <div id='resposta'></div>
+                <div class="card">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapseregister">Register</div>
+                    <div class="card-body collapse" id="collapseregister" data-parent="#accordionExample">
+                        <p><input class='form-control' type="text" id='name' placeholder="nome"/></p>
+                        <p><input class='form-control' type="text" id='email' placeholder="email"/></p>
+                        <p><input class='form-control' type="password" id='password' placeholder="password"/></p>
+                        <p><input class='form-control' type="password" id='password_confirmation' placeholder="password"/></p>
+                        <p><button class='btn btn-block btn-primary' onclick="registerAPI()">Register API - JS</button></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapselogin">Login</div>
+                    <div class="card-body collapse" id="collapselogin" data-parent="#accordionExample">
+                        <p><input class='form-control' type="text" id='email_login' placeholder="email"/></p>
+                        <p><input class='form-control' type="password" id='password_login' placeholder="password"/></p>
+                        <p><button class="btn btn-block btn-primary" onclick="loginAPI()">Login API - JS</button></p>
+                        <p><button class="btn btn-block btn-secondary" onclick="loginCookieAPI()">Login API - JS / returns cookie</button></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapse">Access API</div>
+                    <div class="card-body collapse" id="collapse" data-parent="#accordionExample">
+                        <p><input class='form-control' type="text" id='token' placeholder="<<TOKEN>>"/></p>
+                        <p><button class="btn btn-block btn-secondary" onclick="openAPI()">Access API - JS (open)</button></p>
+                        <p><button class="btn btn-block btn-secondary" onclick="userAPI()">User API - JS (needs authentication / text jwt)</button></p>
+                        <p><button class="btn btn-block btn-secondary" onclick="closedAPI()">Access closed API - JS (needs authentication / text jwt)</button></p>
+                        <p><button class="btn btn-block btn-secondary" onclick="closedCookieAPI()">Access closed API - JS  (needs authentication / cookie)</button></p>
+                    </div>
                 </div>
             </div>
         </div>

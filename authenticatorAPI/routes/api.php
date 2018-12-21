@@ -18,9 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('register', 'UserController@register');
 Route::post('login', 'UserController@authenticate');
+Route::post('cookielogin', 'UserController@cookieAuthenticate');
 Route::get('open', 'DataController@open');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
     Route::get('closed', 'DataController@closed');
+    Route::get('closedcookie', 'DataController@closedCookie');
 });

@@ -3,8 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use JWTAuth;
-use Exception;
+use Tymon\JWTAuth\Token;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Illuminate\Session\TokenMismatchException;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
 class JwtMiddleware extends BaseMiddleware
@@ -18,17 +21,22 @@ class JwtMiddleware extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
+        // $user = JWTAuth::parseToken()->authenticate();
+
         try {
-            $user = JWTAuth::parseToken()->authenticate();
-        } catch (Exception $e) {
-            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
-                return response()->json(['status' => 'Token is Invalid']);
-            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['status' => 'Token is Expired']);
-            }else{
-                return response()->json(['status' => 'Authorization Token not found']);
+            // if(!$request->headers->has('csrf-token')) throw new TokenMismatchException();
+            $rawToken = $request->cookie('batatinha');
+            $token = new Token($rawToken);
+            $payload = JWTAuth::decode($token);
+            if($payload['csrf-token'] != $request->headers->get('csrf-token')) throw new TokenMismatchException();
+            Auth::loginUsingId($payload['sub']);
+        } catch(\Exception $e) {
+            if( $e instanceof TokenExpiredException) {
+                // TODO token refresh here
             }
+            return response('Unauthorized.', 401);
         }
+
         return $next($request);
     }
 }
