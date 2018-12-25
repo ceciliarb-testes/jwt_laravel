@@ -6,6 +6,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Cookie\CookieJar;
+use Illuminate\Cookie\Cookie;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -43,8 +45,12 @@ class UserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-
-        return response()->json('success!')->withCookie('batatinha', $token, config('jwt.ttl'), "/", null, false, true);
+        $response = new \Illuminate\Http\Response(`success!`);
+        $response->withCookie(cookie('batatinha', $token, config('jwt.ttl'), "/", "prodabel", false, false));
+        return $response;
+        // return response()
+        //         ->json('success!')
+        //         ->withCookie(cookie('batatinha', $token, config('jwt.ttl'), "/", null, false, true));
     }
 
     /**

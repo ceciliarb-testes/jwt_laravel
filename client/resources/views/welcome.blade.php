@@ -71,16 +71,19 @@
                     console.log(response);
                 })
                 .catch(function (error) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(error);
                     console.log(error);
                 });
             }
             function loginCookieAPI() {
+                axios.defaults.crossDomain = true;
+                axios.defaults.withCredentials = true;
                 axios.post('http://localhost:8000/api/cookielogin', {
                     email: document.getElementById('email_login').value,
                     password: document.getElementById('password_login').value,
                     headers:  {
                         'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Content-Type': 'application/json',
                     },
                 })
                 .then(function (response) {
@@ -88,6 +91,7 @@
                     console.log(response);
                 })
                 .catch(function (error) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(error);
                     console.log(error);
                 });
             }
@@ -103,6 +107,7 @@
                     console.log(response);
                 })
                 .catch(function (error) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(error);
                     console.log(error);
                 });
             }
@@ -119,20 +124,17 @@
                     console.log(response);
                 })
                 .catch(function (error) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(error);
                     console.log(error);
                 });
             }
-            function getCookieValue(a) {
-                console.log(document.cookie);
-                var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
-                return b ? b.pop() : '';
-            }
             function closedCookieAPI() {
-                axios.get('http://localhost:8000/api/closedcookie', {
-                    headers:  {
+               axios.defaults.withCredentials = true;
+               axios.defaults.crossDomain = true;
+                axios.post('http://localhost:8000/api/closedcookie', {
+                    headers:  { 
                         'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer '+getCookieValue('batatinha'),
                     },
                 })
                 .then(function (response) {
@@ -140,6 +142,7 @@
                     console.log(response);
                 })
                 .catch(function (error) {
+                    document.getElementById('resposta').innerHTML = JSON.stringify(error);
                     console.log(error);
                 });
             }

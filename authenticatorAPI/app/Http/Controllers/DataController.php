@@ -19,8 +19,9 @@ class DataController extends Controller
             return response()->json(compact('data'),200);
         }
 
-        public function closedCookie()
+        public function closedCookie(Request $request)
         {
+
             $data = "Only authorized users can see this";
             return response()->json(compact('data'),200);
         }

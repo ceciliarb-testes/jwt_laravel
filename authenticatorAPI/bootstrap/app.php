@@ -1,8 +1,4 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type, X-Requested-With, Authorization');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Accept: text/html, application/xhtml+xml, application/x-www-form-urlencoded, application/xml;q=0.9, image/webp, */*;q=0.8');
 
 /*
 |--------------------------------------------------------------------------
